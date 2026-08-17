@@ -9,6 +9,16 @@ import EventForm from './EventForm.jsx'
 import EventDetail from './EventDetail.jsx'
 import '../../styles/dataTable.css'
 
+function eventStatusBadge(event) {
+  if (event.myRegistrationStatus === 'Registered') return { label: "You're in", cls: 'badge-success' }
+  if (event.myRegistrationStatus === 'Waitlisted') return { label: 'Waitlisted', cls: 'badge-warning' }
+  if (!event.registrationRequired) return null
+  if (event.maxParticipants == null) return { label: 'Open', cls: 'badge-success' }
+  if (event.registeredCount >= event.maxParticipants) return { label: 'Full', cls: 'badge-muted' }
+  if (event.registeredCount / event.maxParticipants >= 0.8) return { label: 'Filling fast', cls: 'badge-warning' }
+  return { label: 'Open', cls: 'badge-success' }
+}
+
 export default function EventList() {
   const session = getSession()
   const canManage = isNoticeManagerRole(session?.role)
@@ -115,20 +125,24 @@ export default function EventList() {
         <p className="table-empty">No upcoming events yet. Stay connected — exciting society events will appear here soon.</p>
       ) : (
         <div className="event-grid">
-          {events.map((event) => (
-            <button type="button" key={event.eventId} className="event-card" onClick={() => openDetail(event)}>
-              <div className="event-card__banner">{event.coverEmoji || '📅'}</div>
-              <div className="event-card__body">
-                <span className="table-badge badge-primary" style={{ width: 'max-content' }}>
-                  {event.categoryName}
-                </span>
-                <div className="event-card__title">{event.eventName}</div>
-                <div className="event-card__meta">{new Date(event.startOn).toLocaleString()}</div>
-                <div className="event-card__meta">{event.venue}</div>
-                <div className="event-card__meta">{event.organizerName}</div>
-              </div>
-            </button>
-          ))}
+          {events.map((event) => {
+            const statusBadge = eventStatusBadge(event)
+            return (
+              <button type="button" key={event.eventId} className="event-card" onClick={() => openDetail(event)}>
+                <div className="event-card__banner">{event.coverEmoji || '📅'}</div>
+                <div className="event-card__body">
+                  <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                    <span className="table-badge badge-primary">{event.categoryName}</span>
+                    {statusBadge && <span className={`table-badge ${statusBadge.cls}`}>{statusBadge.label}</span>}
+                  </div>
+                  <div className="event-card__title">{event.eventName}</div>
+                  <div className="event-card__meta">{new Date(event.startOn).toLocaleString()}</div>
+                  <div className="event-card__meta">{event.venue}</div>
+                  <div className="event-card__meta">{event.organizerName}</div>
+                </div>
+              </button>
+            )
+          })}
         </div>
       )}
 

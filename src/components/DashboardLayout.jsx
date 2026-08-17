@@ -5,6 +5,7 @@ import { getVisibleNavItems, LOGOUT_ICON } from '../config/dashboardNav.js'
 import Icon from './Icon.jsx'
 import NoticeBell from './NoticeBell.jsx'
 import ComplaintSiren from './ComplaintSiren.jsx'
+import EventBell from './EventBell.jsx'
 import '../styles/dashboard.css'
 
 const COLLAPSE_KEY = 'shubhangi-chsl.sidebar-collapsed'
@@ -98,6 +99,7 @@ export default function DashboardLayout() {
 
           {session?.role !== 'SuperAdmin' && <NoticeBell />}
           {session?.role !== 'SuperAdmin' && <ComplaintSiren />}
+          {session?.role !== 'SuperAdmin' && <EventBell />}
 
           <div className="dash-user">
             <span className="dash-user-name">{session?.fullName || session?.email}</span>

@@ -482,7 +482,7 @@
 .event-card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 18px;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   display: flex;
@@ -491,39 +491,65 @@
   text-align: left;
   padding: 0;
   font-family: inherit;
-  transition: border-color 0.15s ease, transform 0.15s ease;
+  transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .event-card:hover {
   border-color: var(--primary-light);
-  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+  transform: translateY(-3px);
 }
 
 .event-card__banner {
-  height: 96px;
+  height: 112px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36px;
-  background: linear-gradient(135deg, var(--marigold-soft), var(--surface));
+  font-size: 42px;
+  position: relative;
+  background: linear-gradient(135deg, var(--marigold-soft) 0%, var(--surface) 75%);
+  overflow: hidden;
+}
+
+.event-card__banner::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(238, 157, 46, 0.35) 1.4px, transparent 1.4px);
+  background-size: 16px 16px;
+  opacity: 0.6;
+  mask-image: linear-gradient(180deg, #000 0%, transparent 85%);
+}
+
+.event-card__banner span {
+  position: relative;
 }
 
 .event-card__body {
-  padding: 14px 16px 16px;
+  padding: 15px 17px 18px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 7px;
 }
 
 .event-card__title {
-  font-size: 15px;
-  font-weight: 600;
+  font-size: 15.5px;
+  font-weight: 700;
   color: var(--text);
+  letter-spacing: -0.1px;
 }
 
 .event-card__meta {
   font-size: 12.5px;
   color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.event-card__meta svg {
+  flex: 0 0 auto;
+  opacity: 0.75;
 }
 
 .form-card {

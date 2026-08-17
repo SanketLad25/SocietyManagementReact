@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import FormField, { SelectField } from '../../components/FormField.jsx'
+import EmojiPicker from '../../components/EmojiPicker.jsx'
 import { createEvent, updateEvent } from '../../api/events.js'
 import { listEventCategories } from '../../api/eventCategories.js'
 import '../../styles/auth.css'
@@ -239,6 +240,12 @@ export default function EventForm({ event, onClose, onSaved }) {
         onChange={handleChange}
         onBlur={handleBlur}
         hint="Shown as the event's card banner until a cover photo is added."
+        rightSlot={
+          <EmojiPicker
+            value={values.coverEmoji}
+            onSelect={(emoji) => setValues((prev) => ({ ...prev, coverEmoji: emoji }))}
+          />
+        }
       />
 
       <FormField

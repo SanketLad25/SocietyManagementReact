@@ -25,6 +25,10 @@ export function getEvent(eventId) {
   return apiGet(`/events/${eventId}`)
 }
 
+export function listEventRegistrations(eventId) {
+  return apiGet(`/events/${eventId}/registrations`)
+}
+
 export async function createEvent(payload) {
   const result = await apiPost('/events', payload)
   notifyEventsChanged()
@@ -33,6 +37,36 @@ export async function createEvent(payload) {
 
 export async function updateEvent(eventId, payload) {
   const result = await apiPut(`/events/${eventId}`, payload)
+  notifyEventsChanged()
+  return result
+}
+
+export async function markInterested(eventId) {
+  const result = await apiPost(`/events/${eventId}/interest`, {})
+  notifyEventsChanged()
+  return result
+}
+
+export async function joinEvent(eventId, payload) {
+  const result = await apiPost(`/events/${eventId}/join`, payload)
+  notifyEventsChanged()
+  return result
+}
+
+export async function cancelMyRegistration(eventId) {
+  const result = await apiPost(`/events/${eventId}/cancel-registration`, {})
+  notifyEventsChanged()
+  return result
+}
+
+export async function cancelEvent(eventId, reason) {
+  const result = await apiPost(`/events/${eventId}/cancel`, { reason })
+  notifyEventsChanged()
+  return result
+}
+
+export async function promoteRegistration(eventId, registrationId) {
+  const result = await apiPost(`/events/${eventId}/registrations/${registrationId}/promote`, {})
   notifyEventsChanged()
   return result
 }

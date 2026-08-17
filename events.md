@@ -78,3 +78,46 @@ Per the society-business-rules skill's "don't default to `CommitteeRoles`" rule 
 1. **Roles**: `RoleNames.NoticeManagerRoles` (Admin+Secretary+Chairman) reused as-is for event management — no new role const.
 2. **Photo storage**: same convention as `NoticeAttachmentService` — local disk under `<ContentRoot>/Content/Event/`, service resolves via `IWebHostEnvironment`. Built in Phase 3 alongside gallery attachments (event cards default to the emoji banner either way — cover photo is an optional upgrade, never a blocker to publishing).
 3. No screens trimmed from v1 — all 9 designed screens ship across the 4 phases as planned.
+
+## Phase 3/4 technical design (routes, DTOs, components)
+
+Status as of this writing: Phase 1 (CRUD/categories) and Phase 2 (join/interest/cancel-registration/waitlist) are live, plus a read-only registrant roster pulled forward into `EventDetail`. Everything below is not yet built except where marked ✅.
+
+### API routes (all under `api/events`, matching the existing controller's base route)
+
+| Method | Route | Role | Purpose |
+|---|---|---|---|
+| POST | `/{eventId}/cancel` | NoticeManagerRoles | Cancel the event; notifies every active registrant |
+| POST | `/{eventId}/registrations/{registrationId}/promote` | NoticeManagerRoles | Move one Waitlisted row to Registered |
+| GET | `/{eventId}/attachments` | any authenticated | List cover + gallery photos |
+| POST | `/{eventId}/attachments` | NoticeManagerRoles | Multipart upload; `kind` = `Cover`\|`Gallery`; Gallery blocked until `EndOn`/`StartOn` passes |
+| GET | `/{eventId}/attachments/{attachmentId}` | any authenticated | Stream file |
+| DELETE | `/{eventId}/attachments/{attachmentId}` | NoticeManagerRoles | Remove a photo |
+| GET | `/notifications/mine` | any authenticated | This resident's event notifications |
+| POST | `/notifications/{notificationId}/read` | any authenticated | Mark one read |
+
+`cancel` and `promote` are distinct from the existing resident-facing `/join`, `/interest`, `/cancel-registration` — those act on *your own* registration; these two are organizer actions on the event or another resident's row.
+
+### DTOs (new)
+
+- `EventCancelRequest { string Reason }` — `Reason` required, matches the `Event.CancelReason` column already in the DB from the Phase 1 migration
+- `EventAttachmentResponse` — mirrors `ComplaintAttachmentResponse` exactly (Id/Kind/FileName/ContentType/FileSizeBytes/UploadedOn)
+- `EventNotificationResponse` — mirrors `ComplaintNotificationResponse` exactly (Id/EventId/Message/IsRead/CreatedOn)
+
+`EventRequest` (the Create/Update DTO) deliberately does **not** gain `Status`/`CancelReason` — cancellation is a distinct, heavier action with its own confirmation UX (the "danger zone" from the original design), not a form field someone could flip accidentally while editing a venue.
+
+### Services
+
+- `EventService.CancelAsync(eventId, EventCancelRequest)` — blocks if already cancelled, sets `Status`/`CancelReason`, audit-logs, calls `EventNotificationService.NotifyCancelledAsync`
+- `EventRegistrationService.PromoteAsync(eventId, registrationId)` — Waitlisted→Registered only, re-validates capacity defensively, notifies the promoted resident
+- `EventAttachmentService` (new) — mirrors `ComplaintAttachmentService` exactly: same flat-file storage pattern under `Content/Event/`, same image-type/size validation
+- `EventNotificationService` (new) — mirrors `ComplaintNotificationService` exactly: one row per (event, recipient), `ListMineAsync`/`MarkReadAsync`. Triggers built now: event cancelled (all active registrants), registration promoted (that resident). Registration-opened-on-publish is a nice-to-have, not required for this pass.
+
+### Frontend
+
+- `src/api/events.js` — add `cancelEvent(eventId, reason)`, `promoteRegistration(eventId, registrationId)`
+- `src/api/eventAttachments.js` (new) — mirrors the `complaintAttachments`-style wrapper
+- `src/api/eventNotifications.js` (new) — `listMyEventNotifications`, `markEventNotificationRead`
+- `EventDetail.jsx` — `ManagerRoster`'s waitlist rows get a **Promote** button; a new danger-zone block (mirroring the Manage Event screen design's copy: "notifies N registered + M waitlisted immediately") for **Cancel event**
+- `EventBell.jsx` — folds in unread notifications (cancellations, promotions) above the live upcoming-events list, so the one bell covers both "what's coming" and "something changed"
+- `EventCalendar.jsx` (new, later) — month grid + dot indicators per category, reusing the visual language from the original design artifact
