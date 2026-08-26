@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import FormField from '../../components/FormField.jsx'
+import SidePanel from '../../components/SidePanel.jsx'
 import { createParkingType, updateParkingType } from '../../api/parkingTypes.js'
 import '../../styles/auth.css'
 import '../../styles/dataTable.css'
@@ -86,8 +87,23 @@ export default function ParkingTypeForm({ parkingType, onClose, onSaved }) {
   }
 
   return (
-    <form className="auth-form form-card" onSubmit={handleSubmit} noValidate>
-      {serverError && <p className="auth-banner-error">{serverError}</p>}
+    <SidePanel
+      title={isEditMode ? 'Edit Parking Type' : 'Add Parking Type'}
+      subtitle={isEditMode ? 'Update this parking type.' : 'Add a new parking type.'}
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" className="table-secondary-btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" form="parking-type-form" className="auth-submit" disabled={status === 'submitting'}>
+            {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Add parking type'}
+          </button>
+        </>
+      }
+    >
+      <form id="parking-type-form" className="auth-form" onSubmit={handleSubmit} noValidate>
+        {serverError && <p className="auth-banner-error">{serverError}</p>}
 
       <FormField
         id="typeName"
@@ -115,14 +131,7 @@ export default function ParkingTypeForm({ parkingType, onClose, onSaved }) {
         </label>
       </div>
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit" className="auth-submit" disabled={status === 'submitting'}>
-          {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Add parking type'}
-        </button>
-      </div>
-    </form>
+      </form>
+    </SidePanel>
   )
 }

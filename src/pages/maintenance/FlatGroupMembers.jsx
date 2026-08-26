@@ -1,8 +1,17 @@
 import { useEffect, useState } from 'react'
 import { listFlats } from '../../api/flats.js'
 import { addFlatGroupMember, removeFlatGroupMember } from '../../api/flatGroups.js'
+import Icon from '../../components/Icon.jsx'
 import '../../styles/auth.css'
 import '../../styles/dataTable.css'
+
+const TRASH_ICON_PATHS = [
+  'M4 7h16',
+  'M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2',
+  'M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13',
+  'M10 11v6',
+  'M14 11v6',
+]
 
 export default function FlatGroupMembers({ group, onClose, onChanged }) {
   const [allFlats, setAllFlats] = useState([])
@@ -87,11 +96,13 @@ export default function FlatGroupMembers({ group, onClose, onChanged }) {
                   <td className="table-actions-col">
                     <button
                       type="button"
-                      className="table-link-btn danger"
+                      className="table-icon-btn table-icon-btn-delete"
+                      aria-label="Remove"
+                      title="Remove"
                       disabled={busy}
                       onClick={() => handleRemove(flat.flatId)}
                     >
-                      Remove
+                      <Icon paths={TRASH_ICON_PATHS} size={16} />
                     </button>
                   </td>
                 </tr>

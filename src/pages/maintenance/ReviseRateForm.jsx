@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import FormField from '../../components/FormField.jsx'
+import SidePanel from '../../components/SidePanel.jsx'
 import { reviseChargeRule } from '../../api/maintenanceChargeRules.js'
 import '../../styles/auth.css'
 import '../../styles/dataTable.css'
@@ -43,8 +44,23 @@ export default function ReviseRateForm({ rule, onClose, onSaved }) {
   }
 
   return (
-    <form className="auth-form form-card" onSubmit={handleSubmit} noValidate>
-      {error && <p className="auth-banner-error">{error}</p>}
+    <SidePanel
+      title={`Revise Rate — ${rule.categoryName}`}
+      subtitle="Start a new rate from a future date without losing the old one."
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" className="table-secondary-btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" form="revise-rate-form" className="auth-submit" disabled={status === 'submitting'}>
+            {status === 'submitting' ? 'Saving…' : 'Revise rate'}
+          </button>
+        </>
+      }
+    >
+      <form id="revise-rate-form" className="auth-form" onSubmit={handleSubmit} noValidate>
+        {error && <p className="auth-banner-error">{error}</p>}
 
       <p className="table-hint">
         Current rate {rule.rate} runs from {rule.effectiveFrom}. Revising closes that rule on the day before your new
@@ -57,14 +73,7 @@ export default function ReviseRateForm({ rule, onClose, onSaved }) {
 
       <FormField id="effectiveFrom" label="New rate effective from" type="date" value={values.effectiveFrom} onChange={handleChange} />
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit" className="auth-submit" disabled={status === 'submitting'}>
-          {status === 'submitting' ? 'Saving…' : 'Revise rate'}
-        </button>
-      </div>
-    </form>
+      </form>
+    </SidePanel>
   )
 }

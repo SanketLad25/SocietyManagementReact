@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { getSession } from '../../api/session.js'
 import { isNoticeManagerRole } from '../../config/roles.js'
 import { cancelEvent, cancelMyRegistration, joinEvent, listEventRegistrations, markInterested, promoteRegistration } from '../../api/events.js'
-import Modal from '../../components/Modal.jsx'
 import EventForm from './EventForm.jsx'
 
 const STATUS_LABEL = {
@@ -343,11 +342,7 @@ export default function EventDetail({ event, onChanged }) {
 
       {canManage && event.status !== 'Cancelled' && <CancelEventPanel event={event} onChanged={onChanged} />}
 
-      {editing && (
-        <Modal title="Edit Event" subtitle="Update this event's details." onClose={() => setEditing(false)}>
-          <EventForm event={event} onClose={() => setEditing(false)} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {editing && <EventForm event={event} onClose={() => setEditing(false)} onSaved={handleSaved} />}
     </div>
   )
 }

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { listChargeRules } from '../../api/maintenanceChargeRules.js'
 import { listMaintenanceCategories } from '../../api/maintenanceCategories.js'
-import Modal from '../../components/Modal.jsx'
 import ChargeRuleForm from './ChargeRuleForm.jsx'
 import ReviseRateForm from './ReviseRateForm.jsx'
 import '../../styles/dataTable.css'
@@ -124,21 +123,9 @@ export default function ChargeRuleList() {
         </div>
       )}
 
-      {addModalOpen && (
-        <Modal title="Add Charge Rule" subtitle="Assign a rate to a category." onClose={closeAddModal}>
-          <ChargeRuleForm onClose={closeAddModal} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {addModalOpen && <ChargeRuleForm onClose={closeAddModal} onSaved={handleSaved} />}
 
-      {reviseRule && (
-        <Modal
-          title={`Revise Rate — ${reviseRule.categoryName}`}
-          subtitle="Start a new rate from a future date without losing the old one."
-          onClose={() => setReviseRule(null)}
-        >
-          <ReviseRateForm rule={reviseRule} onClose={() => setReviseRule(null)} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {reviseRule && <ReviseRateForm rule={reviseRule} onClose={() => setReviseRule(null)} onSaved={handleSaved} />}
     </div>
   )
 }

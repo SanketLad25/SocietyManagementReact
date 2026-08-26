@@ -146,11 +146,7 @@ export default function EventList() {
         </div>
       )}
 
-      {addModalOpen && (
-        <Modal title="Add Event" subtitle="Publish a new event for your society." onClose={closeAddModal}>
-          <EventForm onClose={closeAddModal} onSaved={handleCreated} />
-        </Modal>
-      )}
+      {addModalOpen && <EventForm onClose={closeAddModal} onSaved={handleCreated} />}
 
       {selectedEvent && (
         <Modal title={selectedEvent.eventName} subtitle={selectedEvent.categoryName} onClose={closeDetail}>

@@ -4,10 +4,21 @@ import { deleteNotice, listNotices, markNoticeRead, publishNotice } from '../../
 import { listNoticeCategories } from '../../api/noticeCategories.js'
 import { getSession } from '../../api/session.js'
 import { isNoticeManagerRole } from '../../config/roles.js'
+import Icon from '../../components/Icon.jsx'
 import Modal from '../../components/Modal.jsx'
 import NoticeForm from './NoticeForm.jsx'
 import NoticeDetail from './NoticeDetail.jsx'
 import '../../styles/dataTable.css'
+
+const EYE_ICON_PATHS = ['M2.5 12S6 5 12 5s9.5 7 9.5 7-3.5 7-9.5 7S2.5 12 2.5 12Z', 'M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z']
+const PENCIL_ICON_PATHS = ['M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z']
+const TRASH_ICON_PATHS = [
+  'M4 7h16',
+  'M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2',
+  'M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13',
+  'M10 11v6',
+  'M14 11v6',
+]
 
 const PRIORITY_BADGE = {
   Normal: 'badge-neutral',
@@ -241,13 +252,25 @@ export default function NoticeList() {
                     </span>
                   </td>
                   <td className="table-actions-col">
-                    <button type="button" className="table-link-btn" onClick={() => openDetail(notice)}>
-                      View
+                    <button
+                      type="button"
+                      className="table-icon-btn table-icon-btn-view"
+                      aria-label="View"
+                      title="View"
+                      onClick={() => openDetail(notice)}
+                    >
+                      <Icon paths={EYE_ICON_PATHS} size={16} />
                     </button>
                     {canManage && notice.status === 'Draft' && (
                       <>
-                        <button type="button" className="table-link-btn" onClick={() => openEditModal(notice)}>
-                          Edit
+                        <button
+                          type="button"
+                          className="table-icon-btn table-icon-btn-edit"
+                          aria-label="Edit"
+                          title="Edit"
+                          onClick={() => openEditModal(notice)}
+                        >
+                          <Icon paths={PENCIL_ICON_PATHS} size={16} />
                         </button>
                         <button
                           type="button"
@@ -262,11 +285,13 @@ export default function NoticeList() {
                     {canManage && (
                       <button
                         type="button"
-                        className="table-link-btn danger"
+                        className="table-icon-btn table-icon-btn-delete"
+                        aria-label="Delete"
+                        title="Delete"
                         disabled={busyId === notice.noticeId}
                         onClick={() => handleDelete(notice)}
                       >
-                        Delete
+                        <Icon paths={TRASH_ICON_PATHS} size={16} />
                       </button>
                     )}
                   </td>
@@ -277,15 +302,7 @@ export default function NoticeList() {
         </div>
       )}
 
-      {modalOpen && (
-        <Modal
-          title={modalNotice ? 'Edit Notice' : 'New Notice'}
-          subtitle={modalNotice ? 'Update this draft notice.' : 'Create a new notice — it stays a draft until you publish it.'}
-          onClose={closeModal}
-        >
-          <NoticeForm notice={modalNotice} onClose={closeModal} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {modalOpen && <NoticeForm notice={modalNotice} onClose={closeModal} onSaved={handleSaved} />}
 
       {detailNotice && (
         <Modal title="Notice" onClose={() => setDetailNotice(null)}>

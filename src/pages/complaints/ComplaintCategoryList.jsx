@@ -1,8 +1,17 @@
 import { useEffect, useState } from 'react'
 import { deleteComplaintCategory, listComplaintCategories } from '../../api/complaintCategories.js'
-import Modal from '../../components/Modal.jsx'
+import Icon from '../../components/Icon.jsx'
 import ComplaintCategoryForm from './ComplaintCategoryForm.jsx'
 import '../../styles/dataTable.css'
+
+const PENCIL_ICON_PATHS = ['M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z']
+const TRASH_ICON_PATHS = [
+  'M4 7h16',
+  'M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2',
+  'M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13',
+  'M10 11v6',
+  'M14 11v6',
+]
 
 export default function ComplaintCategoryList() {
   const [categories, setCategories] = useState([])
@@ -100,16 +109,24 @@ export default function ComplaintCategoryList() {
                     </span>
                   </td>
                   <td className="table-actions-col">
-                    <button type="button" className="table-link-btn" onClick={() => openEditModal(category)}>
-                      Edit
+                    <button
+                      type="button"
+                      className="table-icon-btn table-icon-btn-edit"
+                      aria-label="Edit"
+                      title="Edit"
+                      onClick={() => openEditModal(category)}
+                    >
+                      <Icon paths={PENCIL_ICON_PATHS} size={16} />
                     </button>
                     <button
                       type="button"
-                      className="table-link-btn danger"
+                      className="table-icon-btn table-icon-btn-delete"
+                      aria-label="Delete"
+                      title="Delete"
                       disabled={deletingId === category.complaintCategoryId}
                       onClick={() => handleDelete(category)}
                     >
-                      {deletingId === category.complaintCategoryId ? 'Deleting…' : 'Delete'}
+                      <Icon paths={TRASH_ICON_PATHS} size={16} />
                     </button>
                   </td>
                 </tr>
@@ -119,15 +136,7 @@ export default function ComplaintCategoryList() {
         </div>
       )}
 
-      {modalOpen && (
-        <Modal
-          title={modalCategory ? 'Edit Category' : 'Add Category'}
-          subtitle={modalCategory ? 'Update this complaint category.' : 'Add a new complaint category.'}
-          onClose={closeModal}
-        >
-          <ComplaintCategoryForm category={modalCategory} onClose={closeModal} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {modalOpen && <ComplaintCategoryForm category={modalCategory} onClose={closeModal} onSaved={handleSaved} />}
     </div>
   )
 }

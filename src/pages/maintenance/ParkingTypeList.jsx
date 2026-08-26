@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { listParkingTypes } from '../../api/parkingTypes.js'
-import Modal from '../../components/Modal.jsx'
+import Icon from '../../components/Icon.jsx'
 import ParkingTypeForm from './ParkingTypeForm.jsx'
 import '../../styles/dataTable.css'
+
+const PENCIL_ICON_PATHS = ['M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z']
 
 export default function ParkingTypeList() {
   const [parkingTypes, setParkingTypes] = useState([])
@@ -86,8 +88,14 @@ export default function ParkingTypeList() {
                     </span>
                   </td>
                   <td className="table-actions-col">
-                    <button type="button" className="table-link-btn" onClick={() => openEditModal(parkingType)}>
-                      Edit
+                    <button
+                      type="button"
+                      className="table-icon-btn table-icon-btn-edit"
+                      aria-label="Edit"
+                      title="Edit"
+                      onClick={() => openEditModal(parkingType)}
+                    >
+                      <Icon paths={PENCIL_ICON_PATHS} size={16} />
                     </button>
                   </td>
                 </tr>
@@ -97,15 +105,7 @@ export default function ParkingTypeList() {
         </div>
       )}
 
-      {modalOpen && (
-        <Modal
-          title={modalParkingType ? 'Edit Parking Type' : 'Add Parking Type'}
-          subtitle={modalParkingType ? 'Update this parking type.' : 'Add a new parking type.'}
-          onClose={closeModal}
-        >
-          <ParkingTypeForm parkingType={modalParkingType} onClose={closeModal} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {modalOpen && <ParkingTypeForm parkingType={modalParkingType} onClose={closeModal} onSaved={handleSaved} />}
     </div>
   )
 }

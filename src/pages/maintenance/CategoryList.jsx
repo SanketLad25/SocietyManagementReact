@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { listMaintenanceCategories } from '../../api/maintenanceCategories.js'
-import Modal from '../../components/Modal.jsx'
+import Icon from '../../components/Icon.jsx'
 import CategoryForm from './CategoryForm.jsx'
 import '../../styles/dataTable.css'
+
+const PENCIL_ICON_PATHS = ['M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z']
 
 export default function CategoryList() {
   const [categories, setCategories] = useState([])
@@ -87,8 +89,14 @@ export default function CategoryList() {
                     </span>
                   </td>
                   <td className="table-actions-col">
-                    <button type="button" className="table-link-btn" onClick={() => openEditModal(category)}>
-                      Edit
+                    <button
+                      type="button"
+                      className="table-icon-btn table-icon-btn-edit"
+                      aria-label="Edit"
+                      title="Edit"
+                      onClick={() => openEditModal(category)}
+                    >
+                      <Icon paths={PENCIL_ICON_PATHS} size={16} />
                     </button>
                   </td>
                 </tr>
@@ -98,15 +106,7 @@ export default function CategoryList() {
         </div>
       )}
 
-      {modalOpen && (
-        <Modal
-          title={modalCategory ? 'Edit Category' : 'Add Category'}
-          subtitle={modalCategory ? 'Update this maintenance category.' : 'Add a new maintenance category.'}
-          onClose={closeModal}
-        >
-          <CategoryForm category={modalCategory} onClose={closeModal} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {modalOpen && <CategoryForm category={modalCategory} onClose={closeModal} onSaved={handleSaved} />}
     </div>
   )
 }

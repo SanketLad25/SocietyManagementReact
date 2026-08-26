@@ -3,10 +3,13 @@ import { useNavigate } from 'react-router-dom'
 import { getComplaint, getComplaintStats, listComplaints, subscribeToComplaintsChanged } from '../../api/complaints.js'
 import { listComplaintCategories } from '../../api/complaintCategories.js'
 import { getSession } from '../../api/session.js'
+import Icon from '../../components/Icon.jsx'
 import Modal from '../../components/Modal.jsx'
 import ComplaintForm from './ComplaintForm.jsx'
 import ComplaintDetail from './ComplaintDetail.jsx'
 import '../../styles/dataTable.css'
+
+const EYE_ICON_PATHS = ['M2.5 12S6 5 12 5s9.5 7 9.5 7-3.5 7-9.5 7S2.5 12 2.5 12Z', 'M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z']
 
 const STAT_CARDS = [
   { key: 'TotalCount', label: 'Total' },
@@ -199,8 +202,14 @@ export default function ComplaintList() {
                   </td>
                   <td>{new Date(complaint.createdOn).toLocaleDateString()}</td>
                   <td className="table-actions-col">
-                    <button type="button" className="table-link-btn" onClick={() => openDetail(complaint)}>
-                      View
+                    <button
+                      type="button"
+                      className="table-icon-btn table-icon-btn-view"
+                      aria-label="View"
+                      title="View"
+                      onClick={() => openDetail(complaint)}
+                    >
+                      <Icon paths={EYE_ICON_PATHS} size={16} />
                     </button>
                   </td>
                 </tr>
@@ -210,11 +219,7 @@ export default function ComplaintList() {
         </div>
       )}
 
-      {addModalOpen && (
-        <Modal title="Raise Complaint" subtitle="Tell us what's wrong and we'll get it sorted." onClose={closeAddModal}>
-          <ComplaintForm onClose={closeAddModal} onSaved={handleCreated} />
-        </Modal>
-      )}
+      {addModalOpen && <ComplaintForm onClose={closeAddModal} onSaved={handleCreated} />}
 
       {selectedComplaint && (
         <Modal

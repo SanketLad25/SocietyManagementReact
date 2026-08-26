@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import FormField, { SelectField } from '../../components/FormField.jsx'
+import SidePanel from '../../components/SidePanel.jsx'
 import {
   createNotice,
   deleteNoticeAttachment,
@@ -190,8 +191,23 @@ export default function NoticeForm({ notice, onClose, onSaved }) {
   }
 
   return (
-    <form className="auth-form form-card" onSubmit={handleSubmit} noValidate>
-      {serverError && <p className="auth-banner-error">{serverError}</p>}
+    <SidePanel
+      title={isEditMode ? 'Edit Notice' : 'New Notice'}
+      subtitle={isEditMode ? 'Update this draft notice.' : 'Create a new notice — it stays a draft until you publish it.'}
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" className="table-secondary-btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" form="notice-form" className="auth-submit" disabled={status === 'submitting'}>
+            {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Save Draft'}
+          </button>
+        </>
+      }
+    >
+      <form id="notice-form" className="auth-form" onSubmit={handleSubmit} noValidate>
+        {serverError && <p className="auth-banner-error">{serverError}</p>}
 
       <FormField
         id="title"
@@ -305,14 +321,7 @@ export default function NoticeForm({ notice, onClose, onSaved }) {
         )}
       </div>
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit" className="auth-submit" disabled={status === 'submitting'}>
-          {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Save Draft'}
-        </button>
-      </div>
-    </form>
+      </form>
+    </SidePanel>
   )
 }

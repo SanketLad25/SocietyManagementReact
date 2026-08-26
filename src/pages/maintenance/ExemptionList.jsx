@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { listExemptions } from '../../api/maintenanceExemptions.js'
-import Modal from '../../components/Modal.jsx'
+import Icon from '../../components/Icon.jsx'
 import ExemptionForm from './ExemptionForm.jsx'
 import '../../styles/dataTable.css'
+
+const PENCIL_ICON_PATHS = ['M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z']
 
 export default function ExemptionList() {
   const [exemptions, setExemptions] = useState([])
@@ -91,8 +93,14 @@ export default function ExemptionList() {
                     </span>
                   </td>
                   <td className="table-actions-col">
-                    <button type="button" className="table-link-btn" onClick={() => openEditModal(exemption)}>
-                      Edit
+                    <button
+                      type="button"
+                      className="table-icon-btn table-icon-btn-edit"
+                      aria-label="Edit"
+                      title="Edit"
+                      onClick={() => openEditModal(exemption)}
+                    >
+                      <Icon paths={PENCIL_ICON_PATHS} size={16} />
                     </button>
                   </td>
                 </tr>
@@ -102,15 +110,7 @@ export default function ExemptionList() {
         </div>
       )}
 
-      {modalOpen && (
-        <Modal
-          title={modalExemption ? 'Edit Exemption' : 'Add Exemption'}
-          subtitle={modalExemption ? 'Update this exemption.' : 'Add a new exemption.'}
-          onClose={closeModal}
-        >
-          <ExemptionForm exemption={modalExemption} onClose={closeModal} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {modalOpen && <ExemptionForm exemption={modalExemption} onClose={closeModal} onSaved={handleSaved} />}
     </div>
   )
 }

@@ -48,27 +48,50 @@
   overflow-y: auto;
 }
 
-.notice-bell-list li button {
+/* Card chrome (border/background/padding) lives on the <li> itself, not on the inner button —
+   VisitorBell's action icons need to sit in their own right-aligned column beside the button
+   (under the date), as a sibling of it rather than nested inside it, so the <li> is the thing
+   that needs to look like one card. Putting chrome on a generic "li button" descendant selector
+   caused two separate specificity bugs earlier (it kept beating narrower rules meant only for the
+   nested action buttons) — moving it here removes that whole class of conflict, since no rule
+   needs to reach through the button anymore. */
+.notice-bell-list li {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
-  width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--surface);
-  cursor: pointer;
-  text-align: left;
   transition: background-color 0.15s ease;
 }
 
-.notice-bell-list li button:hover {
+.notice-bell-list li:hover {
   background: var(--bg);
 }
 
-.notice-bell-list li.unread button {
-  border-color: var(--primary);
+.notice-bell-list li.unread {
+  /* A soft tinted background is enough of an unread signal. */
   background: rgba(79, 70, 229, 0.06);
+}
+
+/* Child combinator, not a descendant selector — the main item button is a direct child of <li>,
+   while VisitorBell's inline Approve/Reject buttons are nested two levels deeper
+   (li > .notice-bell-item-side > .notice-bell-inline-actions > button). A descendant selector
+   here previously reached through and leaked flex/min-width onto those nested buttons too,
+   undermining their fixed-size icon-square look — only partially masked earlier by an
+   `align-items: center !important` hack instead of being fixed at the source. */
+.notice-bell-list li > button {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
 }
 
 .notice-bell-item-title {
@@ -77,21 +100,96 @@
   font-size: 13.5px;
   font-weight: 600;
   color: var(--text);
+  line-height: 1.35;
+  /* Up to 2 lines before truncating — a single-line ellipsis was cutting longer messages
+     (e.g. VisitorBell's "New visitor X is awaiting your approval") off mid-word. */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .notice-bell-list li.unread .notice-bell-item-title {
   font-weight: 700;
 }
 
+/* VisitorBell-only: date + Approve/Reject icons stacked in a right-aligned column beside the
+   message, so the icons sit directly under the date rather than spanning the full card width. */
+.notice-bell-item-side {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
 .notice-bell-item-date {
   flex-shrink: 0;
+  padding-top: 1px;
   font-size: 12px;
   color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* VisitorBell-only: a small circular photo of the visitor beside their notification — the other
+   three bells have no photo concept, so this class is unused outside VisitorBell.jsx. */
+.notice-bell-avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.notice-bell-avatar-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-subtle);
 }
 
 .notice-bell-back {
   margin-bottom: 12px;
+}
+
+/* VisitorBell-only: icon-only Approve/Reject squares under the date — the one bell with an
+   actionable surface beyond glance-and-navigate. Rounded-square, colored, white icon, with a
+   slight bevel/shadow for a touch of depth, echoing the familiar green-check/red-cross glyph
+   pairing rather than text-labeled buttons. */
+.notice-bell-inline-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.notice-bell-inline-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.15);
+  transition: filter 0.15s ease, opacity 0.15s ease;
+}
+
+.notice-bell-inline-actions .notice-bell-action-approve {
+  background: var(--success);
+}
+
+.notice-bell-inline-actions .notice-bell-action-reject {
+  background: var(--error);
+}
+
+.notice-bell-inline-actions button:hover:not(:disabled) {
+  filter: brightness(0.94);
+}
+
+.notice-bell-inline-actions button:disabled {
+  opacity: 0.6;
+  cursor: default;
 }

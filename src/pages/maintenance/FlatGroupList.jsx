@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import { listFlatGroups } from '../../api/flatGroups.js'
+import Icon from '../../components/Icon.jsx'
 import Modal from '../../components/Modal.jsx'
 import FlatGroupForm from './FlatGroupForm.jsx'
 import FlatGroupMembers from './FlatGroupMembers.jsx'
 import '../../styles/dataTable.css'
+
+const PENCIL_ICON_PATHS = ['M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z']
 
 export default function FlatGroupList() {
   const [groups, setGroups] = useState([])
@@ -97,8 +100,14 @@ export default function FlatGroupList() {
                     <button type="button" className="table-link-btn" onClick={() => setMembersGroup(group)}>
                       Members
                     </button>
-                    <button type="button" className="table-link-btn" onClick={() => openEditModal(group)}>
-                      Edit
+                    <button
+                      type="button"
+                      className="table-icon-btn table-icon-btn-edit"
+                      aria-label="Edit"
+                      title="Edit"
+                      onClick={() => openEditModal(group)}
+                    >
+                      <Icon paths={PENCIL_ICON_PATHS} size={16} />
                     </button>
                   </td>
                 </tr>
@@ -108,15 +117,7 @@ export default function FlatGroupList() {
         </div>
       )}
 
-      {modalOpen && (
-        <Modal
-          title={modalGroup ? 'Edit Flat Group' : 'Add Flat Group'}
-          subtitle={modalGroup ? 'Update this flat group.' : 'Add a new flat group.'}
-          onClose={closeModal}
-        >
-          <FlatGroupForm group={modalGroup} onClose={closeModal} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {modalOpen && <FlatGroupForm group={modalGroup} onClose={closeModal} onSaved={handleSaved} />}
 
       {membersGroup && (
         <Modal

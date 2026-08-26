@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import FormField from '../../components/FormField.jsx'
+import SidePanel from '../../components/SidePanel.jsx'
 import { createNoticeCategory, updateNoticeCategory } from '../../api/noticeCategories.js'
 import '../../styles/auth.css'
 import '../../styles/dataTable.css'
@@ -86,8 +87,23 @@ export default function NoticeCategoryForm({ category, onClose, onSaved }) {
   }
 
   return (
-    <form className="auth-form form-card" onSubmit={handleSubmit} noValidate>
-      {serverError && <p className="auth-banner-error">{serverError}</p>}
+    <SidePanel
+      title={isEditMode ? 'Edit Category' : 'Add Category'}
+      subtitle={isEditMode ? 'Update this notice category.' : 'Add a new notice category.'}
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" className="table-secondary-btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" form="notice-category-form" className="auth-submit" disabled={status === 'submitting'}>
+            {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Add category'}
+          </button>
+        </>
+      }
+    >
+      <form id="notice-category-form" className="auth-form" onSubmit={handleSubmit} noValidate>
+        {serverError && <p className="auth-banner-error">{serverError}</p>}
 
       <FormField
         id="categoryName"
@@ -115,14 +131,7 @@ export default function NoticeCategoryForm({ category, onClose, onSaved }) {
         </label>
       </div>
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit" className="auth-submit" disabled={status === 'submitting'}>
-          {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Add category'}
-        </button>
-      </div>
-    </form>
+      </form>
+    </SidePanel>
   )
 }

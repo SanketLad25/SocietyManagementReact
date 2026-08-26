@@ -24,23 +24,85 @@
   color-scheme: light dark;
 }
 
+/* Dark values are defined once and reused by both triggers below: the OS-level media query
+   (guarded so an explicit "light" choice from the toggle isn't overridden by a dark OS setting)
+   and the explicit [data-theme="dark"] attribute the toggle sets — so the toggle always wins over
+   OS preference in either direction, while a page with no JS/no saved choice still gets a
+   sensible dark default from the OS alone. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #12131a;
-    --surface: #1a1c26;
-    --text: #eceef3;
-    --text-muted: #a1a5b3;
-    --text-subtle: #6b7280;
-    --border: #2b2e3b;
-    --error-bg: rgba(220, 38, 38, 0.12);
+  :root:not([data-theme='light']) {
+    /* A slightly-lifted dark slate with a whisper of cool undertone (rather than true near-black
+       neutral grey) reads as more considered/premium, and the wider gap between --bg and
+       --surface makes cards actually lift off the page instead of blending into it. */
+    --bg: #1a1c22;
+    --surface: #262a34;
+    --text: #eef0f4;
+    --text-muted: #a2a8b5;
+    --text-subtle: #767c8a;
+    --border: #383e4a;
+    --border-focus: var(--primary-light);
+    --error-bg: rgba(220, 38, 38, 0.16);
     --shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.55);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
     --marigold: #f6bd63;
     --marigold-soft: rgba(246, 189, 99, 0.15);
   }
 }
 
+:root[data-theme='dark'] {
+  --bg: #1a1c22;
+  --surface: #262a34;
+  --text: #eef0f4;
+  --text-muted: #a2a8b5;
+  --text-subtle: #767c8a;
+  --border: #383e4a;
+  --border-focus: var(--primary-light);
+  --error-bg: rgba(220, 38, 38, 0.16);
+  --shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.55);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --marigold: #f6bd63;
+  --marigold-soft: rgba(246, 189, 99, 0.15);
+}
+
+/* Smooths the color-token change on toggle rather than an instant jump. */
+body,
+.dash-topbar,
+.dash-sidebar,
+.dash-content,
+.auth-shell {
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
 * {
   box-sizing: border-box;
+}
+
+/* Thin, themed scrollbars everywhere (chat panel, notification lists, side panels, wide tables)
+   instead of each browser's blocky default with arrow buttons — Firefox via scrollbar-width/
+   -color, Chromium/WebKit via the ::-webkit-scrollbar pseudo-elements. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-subtle) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--text-subtle);
+  background-clip: padding-box;
+  border-radius: 999px;
+  border: 2px solid transparent;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 html,

@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import { listUsers } from '../../api/adminUsers.js'
+import Icon from '../../components/Icon.jsx'
 import Modal from '../../components/Modal.jsx'
 import UserForm from './UserForm.jsx'
 import ResetPasswordForm from './ResetPasswordForm.jsx'
 import '../../styles/dataTable.css'
+
+const PENCIL_ICON_PATHS = ['M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z']
 
 export default function UserList() {
   const [users, setUsers] = useState([])
@@ -99,8 +102,14 @@ export default function UserList() {
                     </span>
                   </td>
                   <td className="table-actions-col">
-                    <button type="button" className="table-link-btn" onClick={() => openEditModal(user)}>
-                      Edit
+                    <button
+                      type="button"
+                      className="table-icon-btn table-icon-btn-edit"
+                      aria-label="Edit"
+                      title="Edit"
+                      onClick={() => openEditModal(user)}
+                    >
+                      <Icon paths={PENCIL_ICON_PATHS} size={16} />
                     </button>
                     <button type="button" className="table-link-btn" onClick={() => setResetUser(user)}>
                       Reset Password
@@ -113,19 +122,7 @@ export default function UserList() {
         </div>
       )}
 
-      {modalOpen && (
-        <Modal
-          title={modalUser ? 'Edit User' : 'Add User'}
-          subtitle={
-            modalUser
-              ? 'Update this user’s details, role, and active status.'
-              : 'Create a login for someone in your society and assign their role.'
-          }
-          onClose={closeModal}
-        >
-          <UserForm user={modalUser} onClose={closeModal} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {modalOpen && <UserForm user={modalUser} onClose={closeModal} onSaved={handleSaved} />}
 
       {resetUser && (
         <Modal title="Reset Password" subtitle="Set a new password for this user." onClose={closeResetModal}>

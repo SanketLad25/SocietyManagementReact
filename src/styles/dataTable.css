@@ -1,3 +1,39 @@
+/* VisitorDetail-only: icon-only Approve/Reject/Delete squares, same visual language as the
+   VisitorBell notification popup's action icons (noticeBell.css) — green tick / red cross / red
+   trash, no text label. Sized a bit larger here to read well next to this page's remaining
+   full-height text action buttons (Check In/Check Out). */
+.visitor-action-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  color: #fff;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.15);
+  transition: filter 0.15s ease, opacity 0.15s ease;
+}
+
+.visitor-action-approve {
+  background: var(--success);
+}
+
+.visitor-action-reject,
+.visitor-action-delete {
+  background: var(--error);
+}
+
+.visitor-action-icon-btn:hover:not(:disabled) {
+  filter: brightness(0.94);
+}
+
+.visitor-action-icon-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
 .table-page-header {
   display: flex;
   align-items: flex-start;
@@ -245,6 +281,64 @@
 .table-actions-col {
   display: flex;
   gap: 12px;
+  align-items: center;
+}
+
+/* Icon-only row actions (Visitors list) — a subtle, professional table-toolbar look: transparent
+   by default, a soft tinted hover matching the action's own color family, rather than filled
+   colored squares (which read as too heavy for four actions sitting side by side in a row). */
+.table-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.table-icon-btn-view {
+  color: var(--text-muted);
+}
+
+.table-icon-btn-view:hover:not(:disabled) {
+  background: var(--bg);
+  color: var(--primary);
+}
+
+.table-icon-btn-edit {
+  color: var(--text-muted);
+}
+
+.table-icon-btn-edit:hover:not(:disabled) {
+  background: var(--bg);
+  color: var(--primary);
+}
+
+.table-icon-btn-approve {
+  color: var(--success);
+}
+
+.table-icon-btn-approve:hover:not(:disabled) {
+  background: rgba(22, 163, 74, 0.12);
+}
+
+.table-icon-btn-reject,
+.table-icon-btn-delete {
+  color: var(--error);
+}
+
+.table-icon-btn-reject:hover:not(:disabled),
+.table-icon-btn-delete:hover:not(:disabled) {
+  background: rgba(220, 38, 38, 0.12);
+}
+
+.table-icon-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 .table-link-btn {
@@ -317,10 +411,200 @@
   flex-wrap: wrap;
 }
 
+.visitor-row-thumb-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 8px;
+  display: block;
+}
+
+.visitor-row-thumb-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.visitor-row-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-subtle);
+}
+
+.visitor-row-thumb-btn:hover .visitor-row-thumb {
+  border-color: var(--primary);
+}
+
+.visitor-photo-preview-large {
+  display: block;
+  width: 100%;
+  max-height: 70vh;
+  border-radius: 10px;
+  object-fit: contain;
+  background: var(--bg);
+}
+
+.visitor-photo-picker-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.visitor-photo-picker-preview img {
+  width: 88px;
+  height: 88px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.visitor-photo-picker-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 88px;
+  height: 88px;
+  border-radius: 10px;
+  border: 1px dashed var(--border);
+  background: var(--bg);
+  color: var(--text-subtle);
+  margin-bottom: 10px;
+}
+
+.visitor-photo-picker-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.visitor-photo-picker-upload-btn {
+  cursor: pointer;
+  text-align: center;
+}
+
+.visitor-profile-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.visitor-profile-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.visitor-profile-photo-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.visitor-profile-photo-btn:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.visitor-profile-photo-btn:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.visitor-profile-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-subtle);
+  flex-shrink: 0;
+}
+
 .photo-gallery {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   flex-wrap: wrap;
+}
+
+.photo-gallery-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 120px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.photo-gallery-item:hover {
+  border-color: var(--primary);
+  background: var(--bg);
+}
+
+.photo-gallery-item:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.photo-gallery-item:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.photo-gallery-thumb {
+  display: block;
+  width: 100px;
+  height: 100px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.photo-gallery-caption {
+  width: 100%;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.photo-gallery-thumb-placeholder {
+  background: linear-gradient(90deg, var(--border) 25%, var(--surface) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+  animation: photo-thumb-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes photo-thumb-pulse {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 .stats-card-row {

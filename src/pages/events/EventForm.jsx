@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import FormField, { SelectField } from '../../components/FormField.jsx'
 import EmojiPicker from '../../components/EmojiPicker.jsx'
+import SidePanel from '../../components/SidePanel.jsx'
 import { createEvent, updateEvent } from '../../api/events.js'
 import { listEventCategories } from '../../api/eventCategories.js'
 import '../../styles/auth.css'
@@ -146,8 +147,23 @@ export default function EventForm({ event, onClose, onSaved }) {
   }
 
   return (
-    <form className="auth-form form-card" onSubmit={handleSubmit} noValidate>
-      {serverError && <p className="auth-banner-error">{serverError}</p>}
+    <SidePanel
+      title={isEditMode ? 'Edit Event' : 'Add Event'}
+      subtitle={isEditMode ? "Update this event's details." : 'Publish a new event for your society.'}
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" className="table-secondary-btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" form="event-form" className="auth-submit" disabled={status === 'submitting'}>
+            {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Publish event'}
+          </button>
+        </>
+      }
+    >
+      <form id="event-form" className="auth-form" onSubmit={handleSubmit} noValidate>
+        {serverError && <p className="auth-banner-error">{serverError}</p>}
 
       <FormField
         id="eventName"
@@ -270,14 +286,7 @@ export default function EventForm({ event, onClose, onSaved }) {
         </label>
       </div>
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit" className="auth-submit" disabled={status === 'submitting'}>
-          {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Publish event'}
-        </button>
-      </div>
-    </form>
+      </form>
+    </SidePanel>
   )
 }

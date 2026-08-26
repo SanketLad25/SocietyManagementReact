@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import FormField from '../../components/FormField.jsx'
+import SidePanel from '../../components/SidePanel.jsx'
 import { createFirstAdmin, createSociety, updateSociety } from '../../api/societies.js'
 import '../../styles/auth.css'
 import '../../styles/dataTable.css'
@@ -240,69 +241,68 @@ export default function SocietyForm({ existingSociety, onClose, onSaved }) {
     </>
   )
 
-  if (isEditMode) {
-    return (
-      <form className="auth-form form-card" onSubmit={handleSocietySubmit} noValidate>
-        {societyServerError && <p className="auth-banner-error">{societyServerError}</p>}
-        {societyFormFields}
-        <div className="form-actions">
-          <button type="button" className="table-secondary-btn" onClick={onClose}>
-            Cancel
-          </button>
-          <button type="submit" className="auth-submit" disabled={societyStatus === 'submitting'}>
-            {societyStatus === 'submitting' ? 'Saving…' : 'Save changes'}
-          </button>
-        </div>
-      </form>
-    )
-  }
+  // Title/subtitle intentionally stay a two-way ternary on isEditMode only — matching exactly what
+  // the parent's <Modal> passed before this conversion. They do NOT change once the admin-creation
+  // step appears; only the footer buttons and the active form id switch for that step.
+  const title = isEditMode ? 'Edit Society' : 'Add Society'
+  const subtitle = isEditMode
+    ? 'Update registration, bank, and contact details for this society.'
+    : 'Create a new society, then its first Admin account.'
 
-  return !createdSociety ? (
-    <form className="auth-form form-card" onSubmit={handleSocietySubmit} noValidate>
-      {societyServerError && <p className="auth-banner-error">{societyServerError}</p>}
-      {societyFormFields}
+  const onAdminStep = !isEditMode && Boolean(createdSociety)
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit" className="auth-submit" disabled={societyStatus === 'submitting'}>
-          {societyStatus === 'submitting' ? 'Creating…' : 'Create society'}
-        </button>
-      </div>
-    </form>
+  const footer = onAdminStep ? (
+    <>
+      <button type="button" className="table-secondary-btn" onClick={onClose}>
+        Skip for now
+      </button>
+      <button type="submit" form="society-admin-form" className="auth-submit" disabled={adminStatus === 'submitting'}>
+        {adminStatus === 'submitting' ? 'Creating…' : 'Create admin'}
+      </button>
+    </>
   ) : (
-    <form className="auth-form form-card" onSubmit={handleAdminSubmit} noValidate>
-      <p className="auth-banner-success">“{createdSociety.societyName}” created. Now set up its first Admin account.</p>
-      {adminServerError && <p className="auth-banner-error">{adminServerError}</p>}
+    <>
+      <button type="button" className="table-secondary-btn" onClick={onClose}>
+        Cancel
+      </button>
+      <button type="submit" form="society-form" className="auth-submit" disabled={societyStatus === 'submitting'}>
+        {societyStatus === 'submitting' ? (isEditMode ? 'Saving…' : 'Creating…') : isEditMode ? 'Save changes' : 'Create society'}
+      </button>
+    </>
+  )
 
-      <FormField
-        id="username"
-        label="Admin username"
-        value={adminValues.username}
-        onChange={handleAdminChange}
-        onBlur={handleAdminBlur}
-        error={adminTouched.username ? adminErrors.username : undefined}
-      />
-      <FormField
-        id="password"
-        label="Initial password"
-        type="password"
-        value={adminValues.password}
-        onChange={handleAdminChange}
-        onBlur={handleAdminBlur}
-        error={adminTouched.password ? adminErrors.password : undefined}
-        hint="Share this with the new Admin directly."
-      />
+  return (
+    <SidePanel title={title} subtitle={subtitle} onClose={onClose} footer={footer}>
+      {onAdminStep ? (
+        <form id="society-admin-form" className="auth-form" onSubmit={handleAdminSubmit} noValidate>
+          <p className="auth-banner-success">“{createdSociety.societyName}” created. Now set up its first Admin account.</p>
+          {adminServerError && <p className="auth-banner-error">{adminServerError}</p>}
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Skip for now
-        </button>
-        <button type="submit" className="auth-submit" disabled={adminStatus === 'submitting'}>
-          {adminStatus === 'submitting' ? 'Creating…' : 'Create admin'}
-        </button>
-      </div>
-    </form>
+          <FormField
+            id="username"
+            label="Admin username"
+            value={adminValues.username}
+            onChange={handleAdminChange}
+            onBlur={handleAdminBlur}
+            error={adminTouched.username ? adminErrors.username : undefined}
+          />
+          <FormField
+            id="password"
+            label="Initial password"
+            type="password"
+            value={adminValues.password}
+            onChange={handleAdminChange}
+            onBlur={handleAdminBlur}
+            error={adminTouched.password ? adminErrors.password : undefined}
+            hint="Share this with the new Admin directly."
+          />
+        </form>
+      ) : (
+        <form id="society-form" className="auth-form" onSubmit={handleSocietySubmit} noValidate>
+          {societyServerError && <p className="auth-banner-error">{societyServerError}</p>}
+          {societyFormFields}
+        </form>
+      )}
+    </SidePanel>
   )
 }

@@ -133,6 +133,20 @@ export const NAV_ITEMS = [
     ],
     description: 'Manage flat-wise parking slot and vehicle assignments.',
   },
+  {
+    key: 'knowledge',
+    societyScoped: true,
+    roles: ['Admin', 'Secretary', 'Chairman'],
+    label: 'Knowledge Base',
+    path: '/dashboard/knowledge',
+    icon: [
+      'M4 19.5A2.5 2.5 0 0 1 6.5 17H20',
+      'M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z',
+      'M9 7h7',
+      'M9 11h7',
+    ],
+    description: 'Author FAQs, policies, and bylaws for the AI assistant to reference.',
+  },
 ]
 
 export const LOGOUT_ICON = ['M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3', 'M16 17l5-5-5-5', 'M21 12H9']

@@ -192,7 +192,7 @@
 .dash-topbar {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 20px;
   padding: 16px 28px;
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -200,6 +200,15 @@
 
 .dash-topbar-spacer {
   flex: 1;
+}
+
+/* Groups the notification bells tighter together (8px) than the 20px gap the topbar uses to
+   separate them from the theme toggle on one side and the user block on the other — spacing
+   alone communicates "these four are one cluster" without needing a divider line. */
+.dash-topbar-alerts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .dash-menu-toggle {

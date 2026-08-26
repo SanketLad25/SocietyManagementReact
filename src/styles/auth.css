@@ -65,6 +65,30 @@
   margin-bottom: 56px;
 }
 
+/* The large centered shield+skyline mark at the top of the auth brand panel — distinct from
+   .auth-logo (still used by DashboardLayout's small sidebar brand row), which stays
+   left-aligned/inline for that much tighter space. */
+.auth-brand-mark {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.auth-brand-wordmark {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.auth-brand-mark-svg {
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.22));
+}
+
 .auth-logo-mark {
   display: inline-flex;
   align-items: center;

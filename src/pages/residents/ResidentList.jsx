@@ -2,9 +2,18 @@ import { useEffect, useState } from 'react'
 import { deleteResident, listResidents } from '../../api/residents.js'
 import { getSession } from '../../api/session.js'
 import { isCommitteeRole } from '../../config/roles.js'
-import Modal from '../../components/Modal.jsx'
+import Icon from '../../components/Icon.jsx'
 import ResidentForm from './ResidentForm.jsx'
 import '../../styles/dataTable.css'
+
+const PENCIL_ICON_PATHS = ['M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z']
+const TRASH_ICON_PATHS = [
+  'M4 7h16',
+  'M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2',
+  'M6 7l1 13a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-13',
+  'M10 11v6',
+  'M14 11v6',
+]
 
 export default function ResidentList() {
   const session = getSession()
@@ -137,16 +146,24 @@ export default function ResidentList() {
                   </td>
                   {canManage && (
                     <td className="table-actions-col">
-                      <button type="button" className="table-link-btn" onClick={() => openEditModal(resident)}>
-                        Edit
+                      <button
+                        type="button"
+                        className="table-icon-btn table-icon-btn-edit"
+                        aria-label="Edit"
+                        title="Edit"
+                        onClick={() => openEditModal(resident)}
+                      >
+                        <Icon paths={PENCIL_ICON_PATHS} size={16} />
                       </button>
                       <button
                         type="button"
-                        className="table-link-btn danger"
+                        className="table-icon-btn table-icon-btn-delete"
+                        aria-label="Delete"
+                        title="Delete"
                         disabled={deletingId === resident.residentId}
                         onClick={() => handleDelete(resident)}
                       >
-                        {deletingId === resident.residentId ? 'Deleting…' : 'Delete'}
+                        <Icon paths={TRASH_ICON_PATHS} size={16} />
                       </button>
                     </td>
                   )}
@@ -157,15 +174,7 @@ export default function ResidentList() {
         </div>
       )}
 
-      {modalOpen && (
-        <Modal
-          title={modalResident ? 'Edit Resident' : 'Add Resident'}
-          subtitle={modalResident ? 'Update this resident’s profile.' : 'Add a new resident to the directory.'}
-          onClose={closeModal}
-        >
-          <ResidentForm resident={modalResident} onClose={closeModal} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {modalOpen && <ResidentForm resident={modalResident} onClose={closeModal} onSaved={handleSaved} />}
     </div>
   )
 }

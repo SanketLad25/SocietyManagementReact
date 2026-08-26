@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import FormField from '../../components/FormField.jsx'
+import SidePanel from '../../components/SidePanel.jsx'
 import { listMaintenanceCategories } from '../../api/maintenanceCategories.js'
 import { listChargeTargetTypes } from '../../api/chargeTargetTypes.js'
 import { listFlatGroups } from '../../api/flatGroups.js'
@@ -104,15 +105,31 @@ export default function ExemptionForm({ exemption, onClose, onSaved }) {
     }
   }
 
-  if (status === 'loading') {
-    return <p className="table-empty">Loading form data…</p>
-  }
-
-  const options = targetOptions()
+  const options = status === 'loading' ? null : targetOptions()
 
   return (
-    <form className="auth-form form-card" onSubmit={handleSubmit} noValidate>
-      {error && <p className="auth-banner-error">{error}</p>}
+    <SidePanel
+      title={isEditMode ? 'Edit Exemption' : 'Add Exemption'}
+      subtitle={isEditMode ? 'Update this exemption.' : 'Add a new exemption.'}
+      onClose={onClose}
+      footer={
+        status === 'loading' ? null : (
+          <>
+            <button type="button" className="table-secondary-btn" onClick={onClose}>
+              Cancel
+            </button>
+            <button type="submit" form="exemption-form" className="auth-submit" disabled={status === 'submitting'}>
+              {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Add exemption'}
+            </button>
+          </>
+        )
+      }
+    >
+      {status === 'loading' ? (
+        <p className="table-empty">Loading form data…</p>
+      ) : (
+      <form id="exemption-form" className="auth-form" onSubmit={handleSubmit} noValidate>
+        {error && <p className="auth-banner-error">{error}</p>}
 
       <div className="field">
         <label htmlFor="categoryId">Category</label>
@@ -168,14 +185,8 @@ export default function ExemptionForm({ exemption, onClose, onSaved }) {
 
       <FormField id="effectiveTo" label="Effective to (optional)" type="date" value={values.effectiveTo} onChange={handleChange} />
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit" className="auth-submit" disabled={status === 'submitting'}>
-          {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Add exemption'}
-        </button>
-      </div>
-    </form>
+      </form>
+      )}
+    </SidePanel>
   )
 }

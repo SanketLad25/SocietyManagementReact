@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import FormField from '../../components/FormField.jsx'
+import SidePanel from '../../components/SidePanel.jsx'
 import { createFlat, updateFlat } from '../../api/flats.js'
 import '../../styles/auth.css'
 import '../../styles/dataTable.css'
@@ -102,8 +103,23 @@ export default function FlatForm({ flat, onClose, onSaved }) {
   }
 
   return (
-    <form className="auth-form form-card" onSubmit={handleSubmit} noValidate>
-      {serverError && <p className="auth-banner-error">{serverError}</p>}
+    <SidePanel
+      title={isEditMode ? 'Edit Flat' : 'Add Flat'}
+      subtitle={isEditMode ? "Update this flat's details." : 'Add a new flat.'}
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" className="table-secondary-btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" form="flat-form" className="auth-submit" disabled={status === 'submitting'}>
+            {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Add flat'}
+          </button>
+        </>
+      }
+    >
+      <form id="flat-form" className="auth-form" onSubmit={handleSubmit} noValidate>
+        {serverError && <p className="auth-banner-error">{serverError}</p>}
 
       <FormField
         id="flatNo"
@@ -152,14 +168,7 @@ export default function FlatForm({ flat, onClose, onSaved }) {
         error={touched.maintenanceAmount ? errors.maintenanceAmount : undefined}
       />
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit" className="auth-submit" disabled={status === 'submitting'}>
-          {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Add flat'}
-        </button>
-      </div>
-    </form>
+      </form>
+    </SidePanel>
   )
 }

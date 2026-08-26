@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import FormField from '../../components/FormField.jsx'
+import SidePanel from '../../components/SidePanel.jsx'
 import { createFlatGroup, updateFlatGroup } from '../../api/flatGroups.js'
 import '../../styles/auth.css'
 import '../../styles/dataTable.css'
@@ -82,8 +83,23 @@ export default function FlatGroupForm({ group, onClose, onSaved }) {
   }
 
   return (
-    <form className="auth-form form-card" onSubmit={handleSubmit} noValidate>
-      {serverError && <p className="auth-banner-error">{serverError}</p>}
+    <SidePanel
+      title={isEditMode ? 'Edit Flat Group' : 'Add Flat Group'}
+      subtitle={isEditMode ? 'Update this flat group.' : 'Add a new flat group.'}
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" className="table-secondary-btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" form="flat-group-form" className="auth-submit" disabled={status === 'submitting'}>
+            {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Add group'}
+          </button>
+        </>
+      }
+    >
+      <form id="flat-group-form" className="auth-form" onSubmit={handleSubmit} noValidate>
+        {serverError && <p className="auth-banner-error">{serverError}</p>}
 
       <FormField
         id="groupName"
@@ -110,14 +126,7 @@ export default function FlatGroupForm({ group, onClose, onSaved }) {
         </label>
       </div>
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit" className="auth-submit" disabled={status === 'submitting'}>
-          {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Add group'}
-        </button>
-      </div>
-    </form>
+      </form>
+    </SidePanel>
   )
 }

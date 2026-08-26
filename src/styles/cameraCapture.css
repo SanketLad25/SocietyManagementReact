@@ -1,0 +1,21 @@
+.camera-capture {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.camera-capture-video,
+.camera-capture-preview {
+  width: 100%;
+  max-height: 60vh;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  object-fit: contain;
+}
+
+.camera-capture-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}

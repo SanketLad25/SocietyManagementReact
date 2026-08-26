@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react'
 import { listAmenities } from '../../api/amenities.js'
+import Icon from '../../components/Icon.jsx'
 import Modal from '../../components/Modal.jsx'
 import AmenityForm from './AmenityForm.jsx'
 import AmenitySubscriptions from './AmenitySubscriptions.jsx'
 import '../../styles/dataTable.css'
+
+const PENCIL_ICON_PATHS = ['M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z']
 
 export default function AmenityList() {
   const [amenities, setAmenities] = useState([])
@@ -94,8 +97,14 @@ export default function AmenityList() {
                         Manage subscriptions
                       </button>
                     )}
-                    <button type="button" className="table-link-btn" onClick={() => openEditModal(amenity)}>
-                      Edit
+                    <button
+                      type="button"
+                      className="table-icon-btn table-icon-btn-edit"
+                      aria-label="Edit"
+                      title="Edit"
+                      onClick={() => openEditModal(amenity)}
+                    >
+                      <Icon paths={PENCIL_ICON_PATHS} size={16} />
                     </button>
                   </td>
                 </tr>
@@ -115,15 +124,7 @@ export default function AmenityList() {
         </Modal>
       )}
 
-      {modalOpen && (
-        <Modal
-          title={modalAmenity ? 'Edit Amenity' : 'Add Amenity'}
-          subtitle={modalAmenity ? 'Update this amenity.' : 'Add a new amenity.'}
-          onClose={closeModal}
-        >
-          <AmenityForm amenity={modalAmenity} onClose={closeModal} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {modalOpen && <AmenityForm amenity={modalAmenity} onClose={closeModal} onSaved={handleSaved} />}
     </div>
   )
 }

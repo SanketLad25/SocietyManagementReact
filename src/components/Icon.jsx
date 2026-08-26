@@ -1,4 +1,4 @@
-export default function Icon({ paths, size = 20 }) {
+export default function Icon({ paths, size = 20, strokeWidth = 1.6 }) {
   return (
     <svg
       width={size}
@@ -6,7 +6,7 @@ export default function Icon({ paths, size = 20 }) {
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.6"
+      strokeWidth={strokeWidth}
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"

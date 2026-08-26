@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { listBillingFrequencies } from '../../api/billingFrequencies.js'
-import Modal from '../../components/Modal.jsx'
+import Icon from '../../components/Icon.jsx'
 import BillingFrequencyForm from './BillingFrequencyForm.jsx'
 import '../../styles/dataTable.css'
+
+const PENCIL_ICON_PATHS = ['M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z']
 
 export default function BillingFrequencyList() {
   const [frequencies, setFrequencies] = useState([])
@@ -85,8 +87,14 @@ export default function BillingFrequencyList() {
                     </span>
                   </td>
                   <td className="table-actions-col">
-                    <button type="button" className="table-link-btn" onClick={() => openEditModal(frequency)}>
-                      Edit
+                    <button
+                      type="button"
+                      className="table-icon-btn table-icon-btn-edit"
+                      aria-label="Edit"
+                      title="Edit"
+                      onClick={() => openEditModal(frequency)}
+                    >
+                      <Icon paths={PENCIL_ICON_PATHS} size={16} />
                     </button>
                   </td>
                 </tr>
@@ -96,15 +104,7 @@ export default function BillingFrequencyList() {
         </div>
       )}
 
-      {modalOpen && (
-        <Modal
-          title={modalFrequency ? 'Edit Billing Frequency' : 'Add Billing Frequency'}
-          subtitle={modalFrequency ? 'Update this billing frequency.' : 'Add a new billing frequency.'}
-          onClose={closeModal}
-        >
-          <BillingFrequencyForm frequency={modalFrequency} onClose={closeModal} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {modalOpen && <BillingFrequencyForm frequency={modalFrequency} onClose={closeModal} onSaved={handleSaved} />}
     </div>
   )
 }

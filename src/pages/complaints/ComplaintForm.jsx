@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { SelectField } from '../../components/FormField.jsx'
+import SidePanel from '../../components/SidePanel.jsx'
 import { createComplaint, uploadComplaintAttachments } from '../../api/complaints.js'
 import { listComplaintCategories } from '../../api/complaintCategories.js'
 import '../../styles/auth.css'
@@ -132,8 +133,23 @@ export default function ComplaintForm({ onClose, onSaved }) {
   }
 
   return (
-    <form className="auth-form form-card" onSubmit={handleSubmit} noValidate>
-      {serverError && <p className="auth-banner-error">{serverError}</p>}
+    <SidePanel
+      title="Raise Complaint"
+      subtitle="Tell us what's wrong and we'll get it sorted."
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" className="table-secondary-btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" form="complaint-form" className="auth-submit" disabled={status === 'submitting'}>
+            {status === 'submitting' ? 'Submitting…' : 'Submit Complaint'}
+          </button>
+        </>
+      }
+    >
+      <form id="complaint-form" className="auth-form" onSubmit={handleSubmit} noValidate>
+        {serverError && <p className="auth-banner-error">{serverError}</p>}
 
       <SelectField
         id="categoryId"
@@ -198,14 +214,7 @@ export default function ComplaintForm({ onClose, onSaved }) {
         )}
       </div>
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit" className="auth-submit" disabled={status === 'submitting'}>
-          {status === 'submitting' ? 'Submitting…' : 'Submit Complaint'}
-        </button>
-      </div>
-    </form>
+      </form>
+    </SidePanel>
   )
 }

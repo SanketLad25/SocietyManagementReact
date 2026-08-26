@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import FormField from '../../components/FormField.jsx'
+import SidePanel from '../../components/SidePanel.jsx'
 import { createBillingCycle } from '../../api/maintenanceBilling.js'
 import '../../styles/auth.css'
 import '../../styles/dataTable.css'
@@ -40,22 +41,30 @@ export default function BillingCycleForm({ onClose, onSaved }) {
   }
 
   return (
-    <form className="auth-form form-card" onSubmit={handleSubmit} noValidate>
-      {error && <p className="auth-banner-error">{error}</p>}
+    <SidePanel
+      title="Add Billing Cycle"
+      subtitle="Define a new billing period."
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" className="table-secondary-btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" form="billing-cycle-form" className="auth-submit" disabled={status === 'submitting'}>
+            {status === 'submitting' ? 'Saving…' : 'Create cycle'}
+          </button>
+        </>
+      }
+    >
+      <form id="billing-cycle-form" className="auth-form" onSubmit={handleSubmit} noValidate>
+        {error && <p className="auth-banner-error">{error}</p>}
 
       <FormField id="cycleLabel" label="Cycle label" placeholder="e.g. September 2026" value={values.cycleLabel} onChange={handleChange} />
       <FormField id="periodStart" label="Period start" type="date" value={values.periodStart} onChange={handleChange} />
       <FormField id="periodEnd" label="Period end" type="date" value={values.periodEnd} onChange={handleChange} />
       <FormField id="dueDate" label="Due date" type="date" value={values.dueDate} onChange={handleChange} />
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit" className="auth-submit" disabled={status === 'submitting'}>
-          {status === 'submitting' ? 'Saving…' : 'Create cycle'}
-        </button>
-      </div>
-    </form>
+      </form>
+    </SidePanel>
   )
 }

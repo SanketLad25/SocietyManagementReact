@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import FormField, { SelectField } from '../../components/FormField.jsx'
+import SidePanel from '../../components/SidePanel.jsx'
 import { createResident, updateResident } from '../../api/residents.js'
 import { listFlats } from '../../api/flats.js'
 import '../../styles/auth.css'
@@ -116,8 +117,23 @@ export default function ResidentForm({ resident, onClose, onSaved }) {
   }
 
   return (
-    <form className="auth-form form-card" onSubmit={handleSubmit} noValidate>
-      {serverError && <p className="auth-banner-error">{serverError}</p>}
+    <SidePanel
+      title={isEditMode ? 'Edit Resident' : 'Add Resident'}
+      subtitle={isEditMode ? "Update this resident's profile." : 'Add a new resident to the directory.'}
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" className="table-secondary-btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" form="resident-form" className="auth-submit" disabled={status === 'submitting'}>
+            {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Add resident'}
+          </button>
+        </>
+      }
+    >
+      <form id="resident-form" className="auth-form" onSubmit={handleSubmit} noValidate>
+        {serverError && <p className="auth-banner-error">{serverError}</p>}
 
       <FormField
         id="fullName"
@@ -182,14 +198,7 @@ export default function ResidentForm({ resident, onClose, onSaved }) {
         </label>
       </div>
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit" className="auth-submit" disabled={status === 'submitting'}>
-          {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Add resident'}
-        </button>
-      </div>
-    </form>
+      </form>
+    </SidePanel>
   )
 }

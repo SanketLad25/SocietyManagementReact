@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import FormField from '../../components/FormField.jsx'
+import SidePanel from '../../components/SidePanel.jsx'
 import { createUser, updateUser } from '../../api/adminUsers.js'
 import '../../styles/auth.css'
 import '../../styles/dataTable.css'
@@ -109,8 +110,27 @@ export default function UserForm({ user, onClose, onSaved }) {
   const isResidentLinked = isEditMode ? Boolean(user.residentId) : values.roleName === 'Resident'
 
   return (
-    <form className="auth-form form-card" onSubmit={handleSubmit} noValidate>
-      {serverError && <p className="auth-banner-error">{serverError}</p>}
+    <SidePanel
+      title={isEditMode ? 'Edit User' : 'Add User'}
+      subtitle={
+        isEditMode
+          ? "Update this user's details, role, and active status."
+          : 'Create a login for someone in your society and assign their role.'
+      }
+      onClose={onClose}
+      footer={
+        <>
+          <button type="button" className="table-secondary-btn" onClick={onClose}>
+            Cancel
+          </button>
+          <button type="submit" form="user-form" className="auth-submit" disabled={status === 'submitting'}>
+            {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Create user'}
+          </button>
+        </>
+      }
+    >
+      <form id="user-form" className="auth-form" onSubmit={handleSubmit} noValidate>
+        {serverError && <p className="auth-banner-error">{serverError}</p>}
 
       <FormField
         id="username"
@@ -201,14 +221,7 @@ export default function UserForm({ user, onClose, onSaved }) {
         </div>
       )}
 
-      <div className="form-actions">
-        <button type="button" className="table-secondary-btn" onClick={onClose}>
-          Cancel
-        </button>
-        <button type="submit" className="auth-submit" disabled={status === 'submitting'}>
-          {status === 'submitting' ? 'Saving…' : isEditMode ? 'Save changes' : 'Create user'}
-        </button>
-      </div>
-    </form>
+      </form>
+    </SidePanel>
   )
 }

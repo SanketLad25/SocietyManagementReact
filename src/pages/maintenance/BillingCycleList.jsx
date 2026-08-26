@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { getSession } from '../../api/session.js'
 import { generateBillingCycle, listBillingCycles, publishBillingCycle } from '../../api/maintenanceBilling.js'
+import Icon from '../../components/Icon.jsx'
 import Modal from '../../components/Modal.jsx'
 import BillingCycleForm from './BillingCycleForm.jsx'
 import BillingCyclePreview from './BillingCyclePreview.jsx'
 import '../../styles/dataTable.css'
+
+const EYE_ICON_PATHS = ['M2.5 12S6 5 12 5s9.5 7 9.5 7-3.5 7-9.5 7S2.5 12 2.5 12Z', 'M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z']
 
 const BILLING_ROLES = ['Admin', 'Treasurer']
 
@@ -125,8 +128,13 @@ export default function BillingCycleList() {
                   </td>
                   <td className="table-actions-col">
                     {cycle.status !== 'Draft' && (
-                      <Link className="table-link-btn" to={`/dashboard/maintenance/billing-cycles/${cycle.cycleId}/bills`}>
-                        View Bills
+                      <Link
+                        className="table-icon-btn table-icon-btn-view"
+                        aria-label="View Bills"
+                        title="View Bills"
+                        to={`/dashboard/maintenance/billing-cycles/${cycle.cycleId}/bills`}
+                      >
+                        <Icon paths={EYE_ICON_PATHS} size={16} />
                       </Link>
                     )}
                     {canBill && cycle.status === 'Draft' && (
@@ -162,11 +170,7 @@ export default function BillingCycleList() {
         </div>
       )}
 
-      {addModalOpen && (
-        <Modal title="Add Billing Cycle" subtitle="Define a new billing period." onClose={() => setAddModalOpen(false)}>
-          <BillingCycleForm onClose={() => setAddModalOpen(false)} onSaved={handleSaved} />
-        </Modal>
-      )}
+      {addModalOpen && <BillingCycleForm onClose={() => setAddModalOpen(false)} onSaved={handleSaved} />}
 
       {previewCycle && (
         <Modal title={`Preview — ${previewCycle.cycleLabel}`} subtitle="Check one flat's charges before generating." onClose={() => setPreviewCycle(null)}>

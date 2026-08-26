@@ -29,11 +29,15 @@ import ComplaintList from './pages/complaints/ComplaintList.jsx'
 import ComplaintCategoryList from './pages/complaints/ComplaintCategoryList.jsx'
 import EventList from './pages/events/EventList.jsx'
 import EventCategoryList from './pages/events/EventCategoryList.jsx'
+import KnowledgeArticleList from './pages/knowledge/KnowledgeArticleList.jsx'
+import VisitorList from './pages/visitors/VisitorList.jsx'
+import VisitorDetail from './pages/visitors/VisitorDetail.jsx'
+import VisitorCategoryList from './pages/visitors/VisitorCategoryList.jsx'
 import { NAV_ITEMS } from './config/dashboardNav.js'
 import { SUPER_ADMIN_ROLE, NOTICE_MANAGER_ROLES } from './config/roles.js'
 
 const REAL_PAGE_KEYS = [
-  'home', 'residents', 'flats', 'users', 'societies', 'maintenance', 'notices', 'parking', 'complaints', 'events',
+  'home', 'residents', 'flats', 'users', 'societies', 'maintenance', 'notices', 'parking', 'complaints', 'events', 'knowledge', 'visitors',
 ]
 const PLACEHOLDER_ITEMS = NAV_ITEMS.filter((item) => !REAL_PAGE_KEYS.includes(item.key))
 
@@ -186,12 +190,32 @@ function App() {
           }
         />
 
+        <Route path="visitors" element={<VisitorList />} />
+        <Route path="visitors/:visitorLogId" element={<VisitorDetail />} />
+        <Route
+          path="visitors/categories"
+          element={
+            <RequireRole roles={['Admin', 'Chairman', 'Secretary', 'Treasurer']} redirectTo="/dashboard/visitors">
+              <VisitorCategoryList />
+            </RequireRole>
+          }
+        />
+
         <Route path="events" element={<EventList />} />
         <Route
           path="events/categories"
           element={
             <RequireRole roles={NOTICE_MANAGER_ROLES} redirectTo="/dashboard/events">
               <EventCategoryList />
+            </RequireRole>
+          }
+        />
+
+        <Route
+          path="knowledge"
+          element={
+            <RequireRole roles={NOTICE_MANAGER_ROLES} redirectTo="/dashboard">
+              <KnowledgeArticleList />
             </RequireRole>
           }
         />

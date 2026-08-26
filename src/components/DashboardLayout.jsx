@@ -6,6 +6,9 @@ import Icon from './Icon.jsx'
 import NoticeBell from './NoticeBell.jsx'
 import ComplaintSiren from './ComplaintSiren.jsx'
 import EventBell from './EventBell.jsx'
+import VisitorBell from './VisitorBell.jsx'
+import ChatWidget from './ChatWidget.jsx'
+import ThemeToggle from './ThemeToggle.jsx'
 import '../styles/dashboard.css'
 
 const COLLAPSE_KEY = 'shubhangi-chsl.sidebar-collapsed'
@@ -97,9 +100,16 @@ export default function DashboardLayout() {
 
           <div className="dash-topbar-spacer" />
 
-          {session?.role !== 'SuperAdmin' && <NoticeBell />}
-          {session?.role !== 'SuperAdmin' && <ComplaintSiren />}
-          {session?.role !== 'SuperAdmin' && <EventBell />}
+          <ThemeToggle />
+
+          {session?.role !== 'SuperAdmin' && (
+            <div className="dash-topbar-alerts">
+              <NoticeBell />
+              <ComplaintSiren />
+              <EventBell />
+              <VisitorBell />
+            </div>
+          )}
 
           <div className="dash-user">
             <span className="dash-user-name">{session?.fullName || session?.email}</span>
@@ -111,6 +121,11 @@ export default function DashboardLayout() {
           <Outlet />
         </main>
       </div>
+
+      {/* Same session?.role !== 'SuperAdmin' guard as the bells above — UX only, the real boundary is
+          the backend's [Authorize(Roles = RoleNames.ChattableRoles)] on ChatController. Rendered
+          outside dash-main since it's a floating overlay, not part of the topbar's icon row. */}
+      {session?.role !== 'SuperAdmin' && <ChatWidget />}
     </div>
   )
 }
