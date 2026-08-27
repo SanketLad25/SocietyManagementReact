@@ -1,7 +1,11 @@
+/* Fixed height (not min-height) + hidden overflow pins the shell to the viewport so the sidebar
+   and topbar never scroll away — .dash-content below is the one region that actually scrolls when
+   a page's content is taller than the viewport. */
 .dash-shell {
   display: grid;
   grid-template-columns: 260px 1fr;
-  min-height: 100svh;
+  height: 100svh;
+  overflow: hidden;
   background: var(--bg);
   transition: grid-template-columns 0.2s ease;
 }
@@ -16,6 +20,10 @@
 
 /* ---------- Sidebar ---------- */
 
+/* overflow stays visible here (not auto) — the collapse-toggle button below is deliberately
+   positioned half outside this element's right edge (right: -12px), and any overflow value other
+   than visible clips/scrolls it away. .dash-nav is the child that actually scrolls if the nav list
+   itself ever gets taller than the sidebar. */
 .dash-sidebar {
   width: 260px;
   display: flex;
@@ -55,11 +63,30 @@
   background: var(--surface);
   color: var(--text-muted);
   cursor: pointer;
+  box-shadow: var(--shadow-sm);
   z-index: 1;
 }
 
 .dash-collapse-toggle:hover {
   color: var(--primary);
+}
+
+/* --surface/--border read fine on the light theme's white-on-purple contrast, but in dark mode
+   they're both too close in lightness to the sidebar's purple gradient AND the main dark
+   background this button straddles, so it nearly disappears — give it its own higher-contrast
+   treatment there instead of the generic surface/border tokens. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .dash-collapse-toggle {
+    background: #3a3f52;
+    border-color: #5b6178;
+    color: #e5e7f0;
+  }
+}
+
+:root[data-theme='dark'] .dash-collapse-toggle {
+  background: #3a3f52;
+  border-color: #5b6178;
+  color: #e5e7f0;
 }
 
 @media (min-width: 901px) {
@@ -85,6 +112,8 @@
 
 .dash-nav {
   flex: 1;
+  min-height: 0;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -187,6 +216,7 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  min-height: 0;
 }
 
 .dash-topbar {
@@ -250,7 +280,9 @@
 
 .dash-content {
   flex: 1;
+  min-height: 0;
   padding: 28px;
+  overflow-y: auto;
 }
 
 /* ---------- Home ---------- */
