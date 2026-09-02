@@ -25,7 +25,7 @@
 .emoji-picker-popover {
   position: absolute;
   top: calc(100% + 6px);
-  left: 0;
+  right: 0;
   z-index: 40;
   width: 260px;
   max-height: 280px;

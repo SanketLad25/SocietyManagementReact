@@ -127,22 +127,6 @@
 }
 
 @media print {
-  body * {
-    visibility: hidden;
-  }
-
-  .invoice-print-area,
-  .invoice-print-area * {
-    visibility: visible;
-  }
-
-  .invoice-print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
-
   .invoice-toolbar {
     display: none;
   }
@@ -151,5 +135,32 @@
     border: none;
     border-radius: 0;
     max-width: none;
+  }
+
+  /* The dashboard shell pins itself to the viewport height (see dashboard.css) so its
+     sidebar/topbar never scroll away on screen. Hiding those regions with visibility:hidden
+     kept them in the layout, so their viewport-height box still counted toward the page's
+     printable height and produced a blank second page. Collapsing the shell to normal flow
+     (and removing the sidebar/topbar/chat widget outright) lets the page height come from
+     the invoice content alone. */
+  .dash-shell {
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
+
+  .dash-sidebar,
+  .dash-sidebar-backdrop,
+  .dash-topbar,
+  .chat-fab,
+  .chat-panel {
+    display: none;
+  }
+
+  .dash-main,
+  .dash-content {
+    height: auto;
+    overflow: visible;
+    padding: 0;
   }
 }
