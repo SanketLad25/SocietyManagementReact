@@ -23,6 +23,7 @@ import BillingCycleList from './pages/maintenance/BillingCycleList.jsx'
 import CycleBillList from './pages/maintenance/CycleBillList.jsx'
 import BillDetail from './pages/maintenance/BillDetail.jsx'
 import MyBills from './pages/maintenance/MyBills.jsx'
+import ReceiptDetail from './pages/maintenance/ReceiptDetail.jsx'
 import NoticeList from './pages/notices/NoticeList.jsx'
 import NoticeCategoryList from './pages/notices/NoticeCategoryList.jsx'
 import ComplaintList from './pages/complaints/ComplaintList.jsx'
@@ -161,6 +162,7 @@ function App() {
           }
         />
         <Route path="maintenance/bills/:billId" element={<BillDetail />} />
+        <Route path="maintenance/payments/:paymentId" element={<ReceiptDetail />} />
         <Route
           path="maintenance/my-bills"
           element={

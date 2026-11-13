@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { listBills } from '../../api/maintenanceBills.js'
 import Icon from '../../components/Icon.jsx'
+import { billStatusBadgeClass } from '../../utils/billStatus.js'
 import '../../styles/dataTable.css'
 
 const EYE_ICON_PATHS = ['M2.5 12S6 5 12 5s9.5 7 9.5 7-3.5 7-9.5 7S2.5 12 2.5 12Z', 'M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z']
@@ -64,7 +65,7 @@ export default function MyBills() {
                   <td>{bill.outstandingAmount}</td>
                   <td>{bill.dueDate}</td>
                   <td>
-                    <span className={`table-badge ${bill.status === 'Paid' ? 'badge-success' : 'badge-neutral'}`}>
+                    <span className={`table-badge ${billStatusBadgeClass(bill.status)}`}>
                       {bill.status}
                     </span>
                   </td>
